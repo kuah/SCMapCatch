@@ -10,6 +10,8 @@
 
 #define MDictionary() [NSMutableDictionary dictionary]
 #define MDictionary_(_dict_) [NSMutableDictionary dictionaryWithDictionary:_dict_]
+#define MArray() [NSMutableArray array]
+#define MArray_(_array_) [NSMutableArray arrayWithArray:_array_]
 
 @interface NSMutableDictionary (MC)
 /**
