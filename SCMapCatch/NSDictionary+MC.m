@@ -9,6 +9,24 @@
 #import "NSDictionary+MC.h"
 
 @implementation NSDictionary (MC)
+
+
+/**
+ *  @brief 支持key以path的形式来获取值
+ *  @param key 可以以路径形式来跨级抓取
+ *  @return 抓取结果
+ */
+-(id)mc_objectForKeys:(NSString *)keys,...{
+    NSMutableArray * keyArray = [NSMutableArray array];
+    va_list args;
+    va_start(args, keys);
+    for (NSString * currentKey = keys; currentKey != nil; currentKey = va_arg(args, id)) {
+        NSCAssert([currentKey isKindOfClass:NSString.class], @"key %@ is not a NSString", currentKey);
+        [keyArray addObject:currentKey];
+    }
+    va_end(args);
+    return  [self mc_objectForKey:keyArray separatedString:nil];
+}
 /**
  *  @brief 支持key以path的形式来获取值
  *  @param aKey 可以以路径形式来跨级抓取

@@ -20,4 +20,6 @@
  *  @param aKey key
  */
 -(void)mc_setObject:(id)anObject forKey:(id<NSCopying>)aKey;
+
+
 @end

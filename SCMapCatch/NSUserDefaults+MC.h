@@ -39,12 +39,43 @@
  *  @brief 同上
  */
 +(BOOL)mc_setObject:(id)value forKey:(id)defaultName separatedString:(NSString *)separatedString;
-/**
- *  @brief 同上
- */
-+(void)mc_setObject:(id)value forKey:(NSString *)defaultName;
+
 /**
  *  @brief 同上
  */
 +(id)mc_objectForKey:(id)defaultName separatedString:(NSString *)separatedString;
+/**
+ *  @brief 同上
+ */
++(void)mc_setObject:(id)value forKey:(NSString *)defaultName;
+
+/**
+ *  @brief 增加了value为nil时，remove当前key的功能
+ *  @param value 不为nil时 setObject:ForKey: 为nil时，removeObjectForKey:
+ *  @param keys 可跨级,必须以nil结尾
+ *  @return 插入是否成功，当路径上递归到非dictionary的值时，将会返回失败 YES/NO
+ */
+-(BOOL)mc_setObject:(id)value forKeys:(NSString *)keys, ...;
+/**
+ *  @brief 增加了value为nil时，remove当前key的功能
+ *  @param value 不为nil时 setObject:ForKey: 为nil时，removeObjectForKey:
+ *  @param keys 可跨级,,必须以nil结尾
+ *  @return 插入是否成功，当路径上递归到非dictionary的值时，将会返回失败 YES/NO
+ */
++(BOOL)mc_setObject:(id)value forKeys:(NSString *)keys, ...;
+
+/**
+ *  @brief 支持key以path的形式来获取值
+ *  @param keys 可以以路径形式来跨级抓取,必须以nil结尾
+ *  @return 抓取结果
+ */
+-(id)mc_objectForKeys:(id)keys, ...;
+/**
+ *  @brief 支持key以path的形式来获取值
+ *  @param keys 可以以路径形式来跨级抓取,必须以nil结尾
+ *  @return 抓取结果
+ */
++(id)mc_objectForKeys:(id)keys, ...;
+
+
 @end

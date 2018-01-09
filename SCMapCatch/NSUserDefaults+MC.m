@@ -114,11 +114,19 @@
         }
     }
 }
+
 /**
  *  @brief 同上
  */
 +(BOOL)mc_setObject:(id)value forKey:(id)defaultName separatedString:(NSString *)separatedString{
     return [[NSUserDefaults standardUserDefaults] mc_setObject:value forKey:defaultName separatedString:separatedString];
+}
+
+/**
+ *  @brief 同上
+ */
++(id)mc_objectForKey:(id)defaultName separatedString:(NSString *)separatedString{
+    return [[NSUserDefaults standardUserDefaults] mc_objectForKey:defaultName separatedString:separatedString];
 }
 /**
  *  @brief 同上
@@ -127,9 +135,101 @@
     [[NSUserDefaults standardUserDefaults] mc_setObject:value forKey:defaultName];
 }
 /**
- *  @brief 同上
+ *  @brief 增加了value为nil时，remove当前key的功能
+ *  @param value 不为nil时 setObject:ForKey: 为nil时，removeObjectForKey:
+ *  @param keys key可跨级,必须以nil结尾
+ *  @return 插入是否成功，当路径上递归到非dictionary的值时，将会返回失败 YES/NO
  */
-+(id)mc_objectForKey:(id)defaultName separatedString:(NSString *)separatedString{
-    return [[NSUserDefaults standardUserDefaults] mc_objectForKey:defaultName separatedString:separatedString];
+-(BOOL)mc_setObject:(id)value forKeys:(NSString *)keys, ...{
+    NSMutableArray * keyArray = [NSMutableArray array];
+    if (!keys) return NO;
+    va_list args;
+    va_start(args, keys);
+    for (NSString * currentKey = keys; currentKey != nil; currentKey = va_arg(args, id)) {
+        NSCAssert([currentKey isKindOfClass:NSString.class], @"key %@ is not a NSString", currentKey);
+        [keyArray addObject:currentKey];
+    }
+    va_end(args);
+    if (keyArray.count==0) {
+        return NO;
+    }else if (keyArray.count==1) {
+        if (value) {
+            [self setObject:value forKey:keyArray.firstObject];
+        }else{
+            [self removeObjectForKey:keyArray.firstObject];
+        }
+        [self synchronize];
+        return YES;
+    }else{
+         return [self mc_setObject:value forKey:keyArray separatedString:nil];
+    }
+}
+/**
+ *  @brief 增加了value为nil时，remove当前key的功能
+ *  @param value 不为nil时 setObject:ForKey: 为nil时，removeObjectForKey:
+ *  @param keys key可跨级,必须以nil结尾
+ *  @return 插入是否成功，当路径上递归到非dictionary的值时，将会返回失败 YES/NO
+ */
++(BOOL)mc_setObject:(id)value forKeys:(NSString *)keys, ...{
+    NSMutableArray * keyArray = [NSMutableArray array];
+    if (!keys) return NO;
+    va_list args;
+    va_start(args, keys);
+    for (NSString * currentKey = keys; currentKey != nil; currentKey = va_arg(args, id)) {
+        NSCAssert([currentKey isKindOfClass:NSString.class], @"key %@ is not a NSString", currentKey);
+        [keyArray addObject:currentKey];
+    }
+    va_end(args);
+    if (keyArray.count==0) {
+        return NO;
+    }else if (keyArray.count==1) {
+        if (value) {
+            [[NSUserDefaults standardUserDefaults] setObject:value forKey:keyArray.firstObject];
+        }else{
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:keyArray.firstObject];
+        }
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return YES;
+    }else{
+        return [[NSUserDefaults standardUserDefaults] mc_setObject:value forKey:keyArray separatedString:nil];
+    }
+}
+
+/**
+ *  @brief 支持key以path的形式来获取值
+ *  @param keys 可以以路径形式来跨级抓取,必须以nil结尾
+ *  @return 抓取结果
+ */
+-(id)mc_objectForKeys:(NSString *)keys, ...{
+    NSMutableArray * keyArray = [NSMutableArray array];
+    if (!keys) return nil;
+    va_list args;
+    va_start(args, keys);
+    for (NSString * currentKey = keys; currentKey != nil; currentKey = va_arg(args, id)) {
+        NSCAssert([currentKey isKindOfClass:NSString.class], @"key %@ is not a NSString", currentKey);
+        [keyArray addObject:currentKey];
+    }
+    va_end(args);
+    if (keyArray.count == 0) return nil;
+    return [self mc_objectForKey:keyArray separatedString:nil];
+}
+
+/**
+ *  @brief 支持key以path的形式来获取值
+ *  @param keys 可以以路径形式来跨级抓取,必须以nil结尾
+ *  @return 抓取结果
+ */
++(id)mc_objectForKeys:(NSString *)keys, ...{
+    NSMutableArray * keyArray = [NSMutableArray array];
+    if (!keys) return nil;
+    va_list args;
+    va_start(args, keys);
+    for (NSString * currentKey = keys; currentKey != nil; currentKey = va_arg(args, id)) {
+        NSCAssert([currentKey isKindOfClass:NSString.class], @"key %@ is not a NSString", currentKey);
+        [keyArray addObject:currentKey];
+    }
+    va_end(args);
+    if (keyArray.count == 0) return nil;
+    return [[NSUserDefaults standardUserDefaults] mc_objectForKey:keyArray separatedString:nil];
 }
 @end

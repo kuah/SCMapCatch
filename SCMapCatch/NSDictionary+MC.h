@@ -16,4 +16,11 @@
  *  @return 抓取结果
  */
 -(id)mc_objectForKey:(id)aKey separatedString:(NSString *)separatedString;
+
+/**
+ *  @brief 支持key以path的形式来获取值
+ *  @param keys 可以以路径形式来跨级抓取
+ *  @return 抓取结果
+ */
+-(id)mc_objectForKeys:(NSString *)keys,...;
 @end

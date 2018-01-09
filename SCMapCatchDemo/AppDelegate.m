@@ -20,7 +20,8 @@
     
     ///Example 1 Dictionary's getting key by path
     NSDictionary *dic = @{@"1":@{@"b":@{@"5":@6}}};
-    id catchResult = [dic mc_objectForKey:@"1.b.5" separatedString:@"."];
+//    id catchResult = [dic mc_objectForKey:@"1.b.5" separatedString:@"."];
+    id catchResult = [dic mc_objectForKeys:@"1",@"b",@"5",nil];
     NSLog(@"**************************  example 1  **************************\n----> %@\n\n\n\n\n",catchResult);
     
     ///Example 2  MutableDictionary remove key by setting nil value
